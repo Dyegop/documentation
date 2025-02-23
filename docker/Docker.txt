@@ -1,0 +1,76 @@
+------ DOCKER COMMANDS ------ 
+
+docker images: List all Docker images on the local machine
+docker pull <image>: Download an image from a registry
+docker build <path>: Build an image from a Dockerfile
+docker build -t <tag_name> <path>: Build an image from a Dockerfile with the given name
+docker tag <image> <new_tag>: Add a tag to an image
+docker rmi <image>: Remove an image
+docker login -u <username> -p <password> <server>: Log in to a registry with given username and password
+docker ps: List all running containers
+docker ps -a: List all containers (including stopped ones)
+docker run <image>: Run a container from an image
+docker run -d <image>: Run a container in detached mode
+docker run -it <image>: Run a container in interactive mode with a terminal
+docker run -v <volume>:<path> <image>: Mount a volume when running a container
+docker stop <container_id>: Stop a running container
+docker start <container_id>: Start a stopped container
+docker restart <container_id>: Restart a container
+docker rm <container_id>: Remove a container
+docker logs <container_id>: Fetch logs of a container
+docker exec -it <container_id> <command>: Execute a command inside a running container
+docker volume ls: List all volumes.
+docker volume create <name>: Create a volume.
+docker volume rm <name>: Remove a volume.
+docker network ls: List all networks.
+docker network create <name>: Create a new network.
+docker network connect <network> <container>: Connect a container to a network.
+docker network disconnect <network> <container>: Disconnect a container from a network.
+docker network rm <name>: Remove a network.
+docker container prune: Remove all stopped containers
+docker container prune -f: Remove all stopped containers without confirmation prompt
+
+
+
+
+------ DOCKER COMPOSE COMMANDS ------ 
+
+docker compose up: Create and start containers
+docker compose up -d: Create and start containers in detached mode
+docker compose up --build: Rebuilds images from the Dockerfile(s) before starting the services
+docker compose down: Stop and remove containers, networks, images, and volumes
+docker compose build: Build or rebuild services
+docker compose logs: View output from containers
+docker compose start: Start services
+docker compose stop: Stop services
+docker compose ps: List containers
+
+
+
+
+------ IMAGES ------
+
+An image is a lightweight, standalone, executable package that includes everything needed to run a piece of software.
+This includes the code, runtime, libraries, environment variables, and configuration files.
+Images are read-only and serve as a blueprint for creating Docker containers.
+They are often built using a Dockerfile, which is a script containing a series of instructions for how to create the image.
+
+
+
+
+------ CONTAINERS ------
+
+A container is a runnable instance of a Docker image.
+Containers are isolated from each other and the host system, but they can communicate with each other. 
+Containers can be started, stopped, moved, and deleted. 
+Each container contains an application and its dependencies, and it shares the kernel of the host operating system.
+
+
+
+
+------ VOLUMES ------
+
+A volume is a storage mechanism for persisting data generated and used by Docker containers. 
+Volumes allow data to persist even after the container is stopped or removed. 
+They provide a way to decouple the data from the container lifecycle.
+Volumes are stored on the host filesystem or in external storage, and they can be shared among multiple containers

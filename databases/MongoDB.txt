@@ -1,0 +1,22 @@
+Basic concepts:
+	-A record in MongoDB is a document, which is a data structure composed of field and value pairs, similar to JSON objects. 
+	-MongoDB stores documents in collections which are analogous to tables in relational databases.
+	-A view (MongoDB v3.4+) is a read-only queryable object whose contents are defined by an aggregation pipeline on other collections or views.
+
+Aggregation Pipeline:
+	-An aggregation pipeline consists of one or more stages that process documents.
+	-Each stage performs an operation on the input documents. For example, a stage can filter documents, group documents, and calculate values.
+	-The documents that are output from a stage are passed to the next stage.
+	-An aggregation pipeline can return results for groups of documents. For example, return the total, average, maximum, and minimum values.
+		-For more examples, see https://www.mongodb.com/docs/manual/core/aggregation-pipeline/#std-label-aggregation-pipeline
+
+QUERIES:
+	-Find documents with array_lenght > n -> {$expr:{$gt:[{$size:"$array"}, n]}}
+	-Find multiples elements -> {key : {"$in" : [value1, value2, ...]}}
+		Example: 
+			{"_id" : {"$in" : [ObjectId("6439cb494a8d4f8b9eec91ba"), ObjectId("6414d46b8f9a0d2f006dd114")]}}
+			
+	-Find documents with array values matching conditions -> {"array_name": {$elemMatch: {"value1": "foo", "value2": "bar", ...}}}
+		Example:
+			{"appraisal.checks": {$elemMatch: {"name": "DuplicateAttractions", "passed": false}}}
+	-Find documents where field exists: {field: {$exists: <boolean>}}

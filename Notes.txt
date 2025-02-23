@@ -1,0 +1,98 @@
+------ SOLID PRINCIPLES ------
+
+Single-responsibility principle.
+	-A class should only have a single responsibility, that is, only changes to one part of the software's specification
+	should be able to affect the specification of the class.
+	-Say you have the (ubiquitous in programming tutorials) Car class. It should only have stuff related to being a car.
+	It shouldn't also be the class with the method you use to pave a new stretch of road.
+
+Open–closed principle.
+	-Software entities should be open for extension, but closed for modification.
+	-This is just the basis of class inheritance. You can extend a Vehicle class with extra methods like packTrunk to make a Car class
+	but if needed, the Vehicle class is still there untouched if you want to use it. If you want to screw around with the Vehicle class,
+	you need to edit its own source code directly - you can't use code in another part of the program to replace its class methods for example.
+
+Liskov substitution principle.
+	-Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program.
+	-You could derive a class called JetSki from Car and use it in its place, but it would suck to use it on a paved road, isn't it?
+
+Interface segregation principle.
+	-Many client-specific interfaces are better than one general-purpose interface.
+	-You could have IVehicle which combines methods to attach a 6-wheeler trailer for trucks and methods related to the back seat for cars.
+	But now both of them have stuff dangling that shows up for them as options but, they can't actually use them at all.
+	Wouldn't it look much nicer and be less prone to misunderstandings if you had separate ICar and ITruck with only the pertaining stuff in each?
+
+Dependency inversion principle.
+	-One should "depend upon abstractions, [not] concretions."
+	-This one is kinda ass to explain. Basically you should shy away from using hard-designated classes and ask to have stuff you need instantiated
+	outside the class and passed to you to use via the constructor or method calls.
+	-So basically instead of hardcoding "new Car()" into your class, make a class property of interface type IVehicle and asks one such object as
+	the constructor parameter. When somebody uses your class they get to use their own IVehicle implementation -which may actually be a Truck class-
+	and pass it to your class. This is super important for unit testing, where you want to test your code in isolation so you pass in "mock" classes
+	to avoid bugs in your IVehicle class making your BusCompany class tests keel over.
+
+
+
+
+------ QUEUES AND MESSAGES ------
+
+Queues and messages are used to exchange data between systems. Specifically, they are often used to share events between systems.
+Messages are data (often in json format) which are put on the queue by the producers and read from the queue by subscribers.
+The message can be a data object fully contained by itself or, it can be a reference to an external event.
+
+A queue is just a service which can store these messages for a period of time. That way, the producers and subscribers can work at 
+their own pace, and if one goes down that will not affect the others. Compare this to HTTP / webhooks, where the producer is unable 
+to deliver a message if the subscriber is offline. 
+
+
+
+
+------ PUB/SUB ------
+
+Pub/Sub, short for Publish/Subscribe, is a messaging pattern used in distributed systems to facilitate communication between different components. 
+It allows for decoupled, asynchronous communication, meaning the components interacting with each other do not need to know about each other or 
+interact in real-time.
+
+Key components:
+	-Publisher:
+		The sender of messages.
+        Generates messages and sends them to a topic.
+    -Subscriber:
+        The receiver of messages.
+        Subscribes to a topic to receive messages.
+    -Topic:
+        A named channel to which publishers send messages and from which subscribers receive messages.
+        Acts as an intermediary between publishers and subscribers.
+    -Message:
+        The data or payload sent from a publisher to a topic.
+        Contains the information that needs to be communicated.
+
+Workflow:
+    -Publishing:
+        A publisher sends a message to a topic.
+        The publisher does not need to know who the subscribers are or how many there are.
+    -Subscribing:
+        A subscriber subscribes to a topic.
+        The subscriber does not need to know who the publishers are.
+    -Message Delivery:
+        When a message is published to a topic, all subscribers of that topic receive the message.
+        Delivery mechanisms can vary (e.g., push-based, where the broker pushes messages to subscribers, or pull-based, where subscribers pull messages from the broker).
+
+Examples of PUB/SUB services:
+	-Apache Kafka: A distributed streaming platform that implements the pub/sub pattern.
+    -Google Cloud Pub/Sub: A fully-managed real-time messaging service that allows you to send and receive messages between independent applications.
+    -AWS SNS (Simple Notification Service): A managed pub/sub service provided by Amazon Web Services.
+    -Redis Pub/Sub: A lightweight pub/sub feature provided by the Redis in-memory data structure store.
+
+
+
+
+
+------ PULUMI ------
+
+Pulumi is an infrastructure as a code solution (similar to terraform) which purpose is repeatable creation and management of infrastructure elements,
+such as IAM service account, Cloud Run services, networking, etc.
+It also provides automation API that allows us to query information about the provisioned infrastructure from the Pulumi states.
+
+You can create the infrastructure with your given cloud provider by going into the console and create the infra on your own.
+But Pulumi helps us to track if we need to update something and also simplifies management of environments.
