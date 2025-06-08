@@ -33,7 +33,7 @@ docker container prune -f: Remove all stopped containers without confirmation pr
 
 
 
------- DOCKER COMPOSE COMMANDS ------ 
+------ DOCKER-COMPOSE COMMANDS ------ 
 
 docker compose up: Create and start containers
 docker compose up -d: Create and start containers in detached mode
@@ -44,6 +44,27 @@ docker compose logs: View output from containers
 docker compose start: Start services
 docker compose stop: Stop services
 docker compose ps: List containers
+
+
+
+
+------ DOCKERFILE ------ 
+
+FROM <image>[:<tag>] [AS <name>]
+- Sets the base image for all subsequent instructions in that Docker build stage.
+
+WORKDIR /path/to/dir
+- Creates the given directory inside the container if it doesn't exist.
+- Changes the current working directory to the given directory for all subsequent commands (RUN, CMD, COPY, ADD, etc).
+
+COPY <src> <dest>
+- Copies files and directories from your local build context into the Docker image.
+
+RUN command
+- Executes a command inside the container image during the build process.
+- Examples: 
+    RUN tail -f /dev/null            # runs in /bin/sh
+    RUN ["tail", "-f", "/dev/null"]  # avoids shell
 
 
 

@@ -75,19 +75,12 @@ Add git branch to terminal.
 
 ------ ERRORS ------ 
 
-Solve merged issues with git:
-git checkout development
-git pull
-git checkout my-branch
-git merge development
-# while there are conflict files
-	git status
-	# resolve all conflicts
-	git add conflict_file
-# end-while
-git commit
-git push -f # we need to force push because you are rewriting the history
-
+Merge branch bypassing post-merge:
+git merge <branch_name>
+	# Fix merge conflicts, if any
+git add .
+git commit --no-verify
+git push
 
 Merge given branch into current and force conflicting hunks to be auto-resolved cleanly by favoring our/their version:
 git merge <branch-name> --strategy-option ours/theirs

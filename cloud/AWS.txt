@@ -1,5 +1,9 @@
 ------ COMMANDS ------ 
 
+aws configure: Configures the AWS CLI with credentials
+aws configure list [--profile profile-name]: Lists the profile, access key, secret key, and region for the specified profile
+aws configure list-profiles: Lists configured profiles
+aws ecr get-login-password --region region: Retrieves an authentication token from AWS ECR 
 
 
 
