@@ -1,0 +1,136 @@
+SINGLE RESPONSABILITY PRINCIPLE (SRP)
+A class should have only one reason to change, meaning it should have only one job or responsibility.
+
+# Bad: One class handles both data and logging
+class Report:
+    def generate(self):
+        return "Report data"
+
+    def save_to_file(self, filename):
+        with open(filename, "w") as f:
+            f.write(self.generate())
+
+# Good: Separate responsibilities
+class Report:
+    def generate(self):
+        return "Report data"
+
+class ReportSaver:
+    def save(self, report: Report, filename: str):
+        with open(filename, "w") as f:
+            f.write(report.generate())
+
+
+OPEN/CLOSED PRINCIPLE (OCP)s
+Software entities (classes, functions, modules) should be open for extension, but closed for modification.
+
+# Bad: Modifying existing code to add behavior
+class Discount:
+    def calculate(self, customer_type):
+        if customer_type == "regular":
+            return 10
+        elif customer_type == "vip":
+            return 20
+
+# Good: Use polymorphism for extension
+class Discount:
+    def calculate(self):
+        return 0
+
+class RegularDiscount(Discount):
+    def calculate(self):
+        return 10
+
+class VIPDiscount(Discount):
+    def calculate(self):
+        return 20
+
+
+LISKOV SUBSTITUTION PRINCIPLE (LSP).
+Objects of a superclass should be replaceable with objects of a subclass without breaking the program.
+Subtypes must behave like their base types; otherwise, polymorphism breaks and bugs appear.
+
+class Bird:
+    def fly(self):
+        pass
+
+class Duck(Bird):
+    def fly(self):
+        print("Duck flying")
+
+class Ostrich(Bird):  # This violates LSP if it can't fly
+    def fly(self):
+        raise Exception("Can't fly")  # Bad design
+
+# Better: Separate the ability to fly
+class Bird:
+    pass
+
+class FlyingBird(Bird):
+    def fly(self):
+        pass
+
+class Duck(FlyingBird):
+    def fly(self):
+        print("Duck flying")
+
+class Ostrich(Bird):  # Not a FlyingBird
+    pass
+
+
+INTERFACE SEGREGATION PRINCIPLE (ISP)
+Clients should not be forced to depend on interfaces they do not use.
+
+# Bad: One interface with too many responsibilities
+class Worker:
+    def work(self):
+        pass
+    def eat(self):
+        pass
+
+# Good: Separate interfaces
+class Workable:
+    def work(self):
+        pass
+
+class Eatable:
+    def eat(self):
+        pass
+
+class Robot(Workable):
+    def work(self):
+        print("Robot working")
+
+class Human(Workable, Eatable):
+    def work(self):
+        print("Human working")
+
+    def eat(self):
+        print("Human eating")
+
+
+DEPENDENCY INVERSION PRINCIPLE (DIP)
+High-level modules should not depend on low-level modules. Both should depend on abstractions.
+This reduces coupling and makes systems more flexible and easier to test.
+
+# Bad: High-level module depends on a concrete class
+class MySQLDatabase:
+    def connect(self):
+        pass
+
+class DataProcessor:
+    def __init__(self):
+        self.db = MySQLDatabase()
+
+# Good: Depend on abstractions
+class Database:
+    def connect(self):
+        pass
+
+class MySQLDatabase(Database):
+    def connect(self):
+        print("Connecting to MySQL")
+
+class DataProcessor:
+    def __init__(self, db: Database):
+        self.db = db

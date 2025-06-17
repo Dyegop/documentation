@@ -1,0 +1,36 @@
+------ PUB/SUB ------
+
+Pub/Sub, short for Publish/Subscribe, is a messaging pattern used in distributed systems to facilitate communication between different components.
+It allows for decoupled, asynchronous communication, meaning the components interacting with each other do not need to know about each other or
+interact in real-time.
+
+Key components:
+	-Publisher:
+		The sender of messages.
+        Generates messages and sends them to a topic.
+    -Subscriber:
+        The receiver of messages.
+        Subscribes to a topic to receive messages.
+    -Topic:
+        A named channel to which publishers send messages and from which subscribers receive messages.
+        Acts as an intermediary between publishers and subscribers.
+    -Message:
+        The data or payload sent from a publisher to a topic.
+        Contains the information that needs to be communicated.
+
+Workflow:
+    -Publishing:
+        A publisher sends a message to a topic.
+        The publisher does not need to know who the subscribers are or how many there are.
+    -Subscribing:
+        A subscriber subscribes to a topic.
+        The subscriber does not need to know who the publishers are.
+    -Message Delivery:
+        When a message is published to a topic, all subscribers of that topic receive the message.
+        Delivery mechanisms can vary (e.g., push-based, where the broker pushes messages to subscribers, or pull-based, where subscribers pull messages from the broker).
+
+Examples of PUB/SUB services:
+	-Apache Kafka: A distributed streaming platform that implements the pub/sub pattern.
+    -Google Cloud Pub/Sub: A fully-managed real-time messaging service that allows you to send and receive messages between independent applications.
+    -AWS SNS (Simple Notification Service): A managed pub/sub service provided by Amazon Web Services.
+    -Redis Pub/Sub: A lightweight pub/sub feature provided by the Redis in-memory data structure store.

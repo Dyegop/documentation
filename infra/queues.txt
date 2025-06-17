@@ -1,0 +1,13 @@
+------ QUEUES AND MESSAGES ------
+
+Queues and messages are used to exchange data between systems. Specifically, they are often used to share events between systems.
+Messages are data (often in json format) which are put on the queue by the producers and read from the queue by subscribers.
+The message can be a data object fully contained by itself or, it can be a reference to an external event.
+
+A queue is just a service which can store these messages for a period of time. That way, the producers and subscribers can work at
+their own pace, and if one goes down that will not affect the others. Compare this to HTTP / webhooks, where the producer is unable
+to deliver a message if the subscriber is offline.
+
+
+
+
