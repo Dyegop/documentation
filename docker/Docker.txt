@@ -3,7 +3,8 @@
 docker images: List all Docker images on the local machine
 docker pull <image>: Download an image from a registry
 docker build <path>: Build an image from a Dockerfile
-docker build -t <tag_name> <path>: Build an image from a Dockerfile with the given name
+docker build -t <name>:<tag> <path>: Sets the given name and tag. Tag is optional
+docker build --target: Specify which stage of a multi-stage Dockerfile you want to build up to and stop there
 docker tag <image> <new_tag>: Add a tag to an image
 docker rmi <image>: Remove an image
 docker login -u <username> -p <password> <server>: Log in to a registry with given username and password
@@ -52,6 +53,7 @@ docker compose ps: List containers
 
 FROM <image>[:<tag>] [AS <name>]
 - Sets the base image for all subsequent instructions in that Docker build stage.
+- AS <name> command labels stages for reuse
 
 WORKDIR /path/to/dir
 - Creates the given directory inside the container if it doesn't exist.
@@ -69,29 +71,64 @@ RUN command
 
 
 
------- IMAGES ------
+------ DOCUMENTATION ------
 
-An image is a lightweight, standalone, executable package that includes everything needed to run a piece of software.
-This includes the code, runtime, libraries, environment variables, and configuration files.
-Images are read-only and serve as a blueprint for creating Docker containers.
-They are often built using a Dockerfile, which is a script containing a series of instructions for how to create the image.
+Images
+    -A Docker image is a read-only template that contains a filesystem snapshot (like code, dependencies, binaries) and
+    metadata (like environment variables, entrypoints, etc.)
+    -Images serve as a blueprint for creating Docker containers.
+    -They are often built using a Dockerfile, which is a script containing a series of instructions for how to create
+    the image.
+
+Containers
+    -A container is a running instance of an image.
+    -Containers are isolated from each other and the host system, but they can communicate with each other.
+    -Each container contains an application and its dependencies, and it shares the kernel of the host operating system.
+
+Volumes
+    -A volume is a persistent storage mechanism managed by Docker.
+    -It stores data outside the container filesystem, so it’s not lost when the container is deleted.
+    -They provide a way to decouple the data from the container lifecycle.
+    -Volumes can be shared among multiple containers.
+
+Layers
+    -A layer is a snapshot of the filesystem at a certain step during the build.
+    -Layers are:
+        Stacked to form the final image
+        Immutable (unchangeable once created)
+        Cached for faster rebuilds
+        Read-only once created
+
+    -Important notes:
+        Each command run in a Dockerfile creates a new, separate image layer.
+        Combining commands to reduce the amount of layers, reducing the image size, for example:
+            RUN apt update && apt install -y curl
+
+            It is a good practice to combine commands to avoid cache issues.
+                In the previous example, if `apt update` is cached but `apt install` changes, Docker may reuse the old
+                package list and install outdated packages.
 
 
 
 
------- CONTAINERS ------
+------ DOCKER MULTISTAGE ------
 
-A container is a runnable instance of a Docker image.
-Containers are isolated from each other and the host system, but they can communicate with each other. 
-Containers can be started, stopped, moved, and deleted. 
-Each container contains an application and its dependencies, and it shares the kernel of the host operating system.
+Multi-stage builds in Docker allow you to use multiple FROM statements in a single Dockerfile.
+You can use one image to build your application, and a different one to run it, keeping the final image clean and small.
 
+Example:
 
+# Stage 1: Build the Go binary
+FROM golang:1.21 AS builder
 
+WORKDIR /app
+COPY . .
+RUN go build -o myapp
 
------- VOLUMES ------
+# Stage 2: Create a minimal image
+FROM alpine:latest
 
-A volume is a storage mechanism for persisting data generated and used by Docker containers. 
-Volumes allow data to persist even after the container is stopped or removed. 
-They provide a way to decouple the data from the container lifecycle.
-Volumes are stored on the host filesystem or in external storage, and they can be shared among multiple containers
+WORKDIR /app
+COPY --from=builder /app/myapp .
+
+CMD ["./myapp"]

@@ -27,7 +27,6 @@ git mv <source> <destination>: Move a file/directory from one place to another w
 git remote add <remote-name> <repository-name>: Add a remote tracking branch. <remote-name> is usually origin.
 git remote prune origin: Remove branches from local repository that no longer in remote.
 git remote update origin --prune
-
 git push: Push local commits.
 git push --set-upstream <remote-name> <branch-name> <repository-name>: Set a remote for a branch.
 git push -u <remote-name> <branch-name> <repository-name>: Set a remote for a branch (Same to the above one).
@@ -46,6 +45,7 @@ Git submodules.
 A submodule is just a pointer to a specific commit in another repository. 
 The submodule repository is a completely independent repository by itself.
 
+
 Git merge strategies.
 	3-Way Merge:
 		git checkout main
@@ -63,6 +63,7 @@ Git merge strategies.
 		git commit -m "Merge feature-branch with squash"
 		git push origin main
 
+
 Add git branch to terminal.
 	Add the following command to ~/.bashrc
 	parse_git_branch() {
@@ -71,16 +72,13 @@ Add git branch to terminal.
 	export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
 
 
-
-
------- ERRORS ------ 
-
 Merge branch bypassing post-merge:
 git merge <branch_name>
 	# Fix merge conflicts, if any
 git add .
 git commit --no-verify
 git push
+
 
 Merge given branch into current and force conflicting hunks to be auto-resolved cleanly by favoring our/their version:
 git merge <branch-name> --strategy-option ours/theirs
