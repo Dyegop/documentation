@@ -68,6 +68,50 @@ RUN command
     RUN tail -f /dev/null            # runs in /bin/sh
     RUN ["tail", "-f", "/dev/null"]  # avoids shell
 
+LABEL
+- Adds metadata to your Docker image in the form of key-value pairs.
+- This metadata provides information about the image.
+- Examples:
+    LABEL "org.opencontainers.image.authors"="foo" "org.opencontainers.image.created"="${BUILD_DATE}"
+    LABEL "org.opencontainers.image.version"="${VERSION}"
+
+
+ARG
+- Defines build-time variables that you can pass to the Docker build process.
+- These variables are available only during the image build and not inside the running container.
+- Example:
+    ARG VERSION=1.0.0
+    RUN echo "Building version ${VERSION}"
+- Example with bash:
+    ARG VERSION
+    docker build --build-arg VERSION=2.0.0 .
+
+
+ENV
+- Sets environment variables inside the Docker image.
+- These variables are available at build time and runtime (inside the container).
+- There are forms:
+    ENV KEY1=value1 ... KEYN=valueN
+    ENV KEY1 value1  # only for a single key-value pair
+- Examples:
+    ENV PORT 8080
+    ENV VIRTUAL_ENV=/venv PATH="$VIRTUAL_ENV/bin:$PATH"
+
+
+CMD
+- Specifies the default command and arguments to run when a container starts from the image.
+- The CMD can be overridden by specifying a command in docker run.
+- There are three common forms:
+    CMD ["executable", "param1", "param2"] - runs the command directly, no shell involved
+    CMD command param1 param2              - runs command through /bin/sh -c
+    ENTRYPOINT ["executable"]              - The CMD provides default arguments to ENTRYPOINT
+    CMD ["param1", "param2"]
+
+- Examples:
+    CMD ["python", "app.py"]
+    CMD python app.py
+    CMD "./entry_flask.sh"  # When you run the container, it executes this script unless overridden
+
 
 
 
