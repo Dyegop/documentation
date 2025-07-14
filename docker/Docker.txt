@@ -20,16 +20,32 @@ docker restart <container_id>: Restart a container
 docker rm <container_id>: Remove a container
 docker logs <container_id>: Fetch logs of a container
 docker exec -it <container_id> <command>: Execute a command inside a running container
-docker volume ls: List all volumes.
-docker volume create <name>: Create a volume.
-docker volume rm <name>: Remove a volume.
-docker network ls: List all networks.
-docker network create <name>: Create a new network.
-docker network connect <network> <container>: Connect a container to a network.
-docker network disconnect <network> <container>: Disconnect a container from a network.
-docker network rm <name>: Remove a network.
 docker container prune: Remove all stopped containers
 docker container prune -f: Remove all stopped containers without confirmation prompt
+docker image prune: Remove dangling images only
+docker image prune -a: Remove all unused images
+docker image prune -f: Remove dangling images only without confirmation prompt
+docker volume ls: List all volumes.
+docker volume create <name>: Create a volume
+docker volume rm <name>: Remove a volume
+docker volume prune: Remove unused volumes
+docker volume inspect <volume>: Returns information about a volume
+docker network ls: List all networks
+docker network create <name>: Create a new network
+docker network connect <network> <container>: Connect a container to a network
+docker network disconnect <network> <container>: Disconnect a container from a network
+docker network rm <name>: Remove a network
+docker network prune: Remove unused networks
+docker system prune: Remove unused containers, networks, images, and build cache (interactive confirmation)
+docker system prune -a: Also remove unused images, not just dangling ones
+docker builder prune: Remove all unused build cache
+docker inspect <container_or_image>: View low-level details about a container or image (like env vars, IP, volumes)
+docker history <image>: Show history of image layers
+docker diff <container>: Show changes to the container’s filesystem
+docker save -o <file>.tar <image>: Save an image to a .tar file (for transfer)
+docker load -i <file>.tar: Load a saved image from a .tar file
+docker export <container>: Export container filesystem (no history/layers)
+docker import <file>.tar: Import a container as an image
 
 
 
@@ -152,6 +168,12 @@ Layers
                 In the previous example, if `apt update` is cached but `apt install` changes, Docker may reuse the old
                 package list and install outdated packages.
 
+Container Filesystem
+    -The container's filesystem in Docker is a layered, isolated environment where a container runs.
+    -When you run a container from an image, Docker adds a writable layer (called the container layer) on top of the
+    image layers.
+    -So the full container filesystem would be: [Base image layers] + [Writable container layer]
+    -Data in thw writable container layer is lost if the container is deleted, unless stored in a volume.
 
 
 
