@@ -1,4 +1,4 @@
------- HTTP ------
+------ HTTP BASICS ------
 
 HTTP (Hypertext Transfer Protocol) is a protocol used by web browsers and servers to communicate.
 It is stateless, text-based, and follows a request-response model.
