@@ -1,0 +1,111 @@
+------ API GATEWAY PATTERN ------
+
+The API Gateway pattern is a design pattern for microservices where you place a single entry point between clients
+and your services.
+Instead of clients calling each microservice directly, all requests go through the gateway.
+
+Responsibilities of an API Gateway:
+    1. Request routing - Forward requests to the right microservice.
+    2. Aggregation / composition - Combine responses from multiple services into one.
+    3. Cross-cutting concerns:
+        Authentication & authorization - Ensuring only valid users or systems can access APIs.
+        Rate limiting, quotas, throttling - Prevent abuse and ensure fair use of APIs.
+        Logging & monitoring - Keeping track of requests, responses, and errors across services.
+        Caching - Store frequent responses to reduce load on services.
+        Request/response transformation - Format changes (XML ↔ JSON), field renaming, API versioning.
+    4. Security boundary - Prevents exposing all services directly to the internet.
+
+Benefits:
+    -Single point of entry for clients.
+    -Simplifies client logic (especially for mobile/web apps).
+    -Enables backend for frontend (BFF) pattern: different gateways for different clients (mobile, web).
+    -Easier to enforce consistent policies (security, monitoring).
+
+Drawbacks:
+    -Can become a single point of failure (must be highly available).
+    -Adds an extra network hop (latency).
+    -Risk of becoming a monolith in disguise if it contains too much business logic.
+
+
+
+
+------ SAGA PATTERN ------
+
+A Saga is a sequence of local transactions, where each service updates its own data and publishes an event or triggers
+the next step.
+If a step fails, the Saga executes compensating transactions to undo the previous steps.
+Instead of one big transaction, you get a series of smaller, coordinated transactions.
+
+The Saga pattern ensures data consistency across multiple microservices.
+
+Types of SAGA patterns:
+    1. Choreography - Event-driven, decentralized
+        No central coordinator.
+        Each service does its work and emits an event.
+        Other services listen and react.
+        Compensation happens if a service emits a failure event.
+
+        Pros: Simple, scalable, services loosely coupled.
+        Cons: Harder to trace/debug, business flow is spread across many services.
+        Implemented with: EventBridge/SNS (AWS) or Pub/Sub (GCP).
+
+    2. Orchestration -Centralized
+        A central orchestrator (Saga Manager) tells each service what to do.
+        Services just perform local tasks and report back.
+        Orchestrator handles compensation if something fails.
+
+        Pros: Centralized control, easier to monitor/debug.
+        Cons: Orchestrator can become a bottleneck or “god service.”
+        Implemented with: Step Functions (AWS) or Workflows (GCP).
+
+
+
+
+------ CQRS PATTERN ------
+
+CQRS (Command Query Responsibility Segregation) is an architecture pattern that separates commands (writes) and
+queries (reads) into different paths, often using different data storages, so each side can be optimized and scaled
+independently.
+
+System is split into two sides:
+    -Command side (writes): Handles requests that change state (POST, PUT...).
+    -Query side (reads): Handles requests that only read state (GET).
+
+Benefits:
+    -Scalability - Reads and writes can scale independently.
+    -Optimized models - Different data models for commands vs queries.
+    -Event sourcing synergy - Often paired with event sourcing (events are the source of truth).
+    -Better performance - Queries can be very fast using denormalized or indexed storage.
+
+Drawbacks:
+    -Increased complexity - Two models, event synchronization.
+    -Eventual consistency - Reads might lag behind writes.
+    -Operational overhead - Need to maintain multiple data storage.
+
+Cloud implementation:
+    1. AWS:
+        Command Flow (Writes):
+            Client calls a command endpoint (e.g. POST).
+            Request goes through API Gateway and routes to Lambda function.
+            Lambda applies business logic and writes to DynamoDB (write-optimized store).
+            DynamoDB Streams capture changes and triggers a Lambda function.
+            Lambda reads the event, transforms the data if needed, and updates the read storage (usually OpenSearch).
+
+        Query Flow (Reads):
+            Client calls a query endpoint (e.g. GET).
+            Request goes through API Gateway and routes to Lambda function.
+            Lambda queries the read store (OpenSearch), optimized for search and analytics.
+            Lambda returns results to the client.
+
+    2. GCP:
+        Command Flow (Writes)
+            Client calls a command endpoint (e.g. POST).
+            Request goes through API Gateway and routes to Cloud Run or Cloud Functions.
+            The service applies business logic and writes to Firestore (NoSQL) or Cloud SQL (SQL relational).
+            Pub/Sub is used to propagate changes through events.
+            Subscriber services listen to the event and update read-optimized store (usually BigQuery, Elastic)
+
+        Query Flow (Reads):
+            Client calls a query endpoint (e.g. GET).
+            Request goes through API Gateway to Cloud Run service.
+            Cloud Run queries the read store (BigQuery, Elastic) and returns results to the client.
